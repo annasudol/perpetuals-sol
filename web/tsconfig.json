@@ -15,7 +15,7 @@
       {
         "name": "next"
       }
-    ]
+    ],
   },
   "include": [
     "**/*.ts",
@@ -27,5 +27,6 @@
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+  "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+
 }
