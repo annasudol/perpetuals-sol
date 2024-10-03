@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./web/*"],
-      "@perpetuals/anchor": ["anchor/src/index.ts"]
+      "@perpetuals/anchor": ["anchor/src/index.ts"],
+      "react": [ "./node_modules/@types/react" ]
     }
   },
   "exclude": ["node_modules", "tmp"]
