@@ -39,7 +39,7 @@ export default function MobileNav() {
     <div className="sm:hidden flex justify-center items-center mr-6 ml-4 relative right-4">
       <button
         onClick={() => setMenuOpen((prev) => !prev)}
-        className="z-[9999] w-8 h-8 relative left-[16%] top-1/2 flex justify-center items-center`"
+        className="z-[9999] w-8 h-8 relative left-[16%] top-1/2 flex justify-center items-center"
       >
         <AnimatedBurger menuOpen={menuOpen} />
       </button>

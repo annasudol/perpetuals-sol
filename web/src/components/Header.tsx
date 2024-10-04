@@ -1,26 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-
-
-
-
+import { twMerge } from 'tailwind-merge';
 
 import { usePathname } from 'next/navigation';
-import { isMobile } from '../utils';
-import { useHydrationErrorFix } from '../hooks/useHydrationErrorFix';
 import MobileNav from './MobileNav';
-
-
-
 
 interface NavbarItemProps {
   title: string;
   target: string;
 }
-interface NavbarItemMobileProps extends NavbarItemProps {
-  setMenuOpen: (newMenuOpenState: boolean) => void;
-}
+
 
 const NavItems: { path: string; title: string }[] = [
   {
@@ -42,8 +32,6 @@ const NavItems: { path: string; title: string }[] = [
 ];
 
 export default function Header() {
-
-
   return (
     <nav className="sticky top-0 sm:border-b-0 border-b-2 sm:border-none border-gray-800 sm:static bg-base-200 sm:bg-transparent flex items-center justify-between w-full !h-[64px] !min-h-[64px]">
       <div className="container flex justify-between items-center">
@@ -64,7 +52,7 @@ function Logo() {
   return (
     <>
       <Link className="flex justify-center items-center" href="/">
-        logo
+        <Image src="./logo.svg" width={50} height={10} alt="logo" />
       </Link>
     </>
   );
@@ -90,14 +78,12 @@ function NavbarItemsDesktop() {
 
 function NavbarItemDesktop({ title, target }: NavbarItemProps) {
   const active = target === usePathname();
+  const baseClassName =
+    'h-full flex items-center px-5 hover:!no-underline hover:text-accent mb-0 uppercase';
+    const isActiveClass = active && "border-b-2 border-amber-400";
   return (
-    <Link
-      className={`h-full flex items-center px-5 hover:!no-underline hover:text-accent mb-0 ${
-        active ? 'border-b-2 border-mber-400' : ''
-      }`}
-      href={target}
-    >
-      <p className={`text-sm ${active ? 'text-mber-400' : 'text-white'}`}>
+    <Link className={twMerge(baseClassName, isActiveClass)} href={target}>
+      <p className={`text-sm ${active ? 'text-amber-400' : 'text-white'}`}>
         {title}
       </p>
     </Link>

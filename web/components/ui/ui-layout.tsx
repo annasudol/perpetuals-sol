@@ -9,8 +9,6 @@ import { usePathname } from 'next/navigation';
 
 import { AccountChecker } from '../account/account-ui';
 import {
-  ClusterChecker,
-  ClusterUiSelect,
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
@@ -23,11 +21,12 @@ const StoreUpdater = () => {
 };
 
 export function UiLayout({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
 
   return (
-    <div>
+    <div className="container mx-auto">
+      <StoreUpdater />
       <Header />
+      {children}
     </div>
   );
 }
