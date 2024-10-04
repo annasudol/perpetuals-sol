@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { usePathname } from 'next/navigation';
-import { isMobile } from '../utils';
 import { useHydrationErrorFix } from '../hooks/useHydrationErrorFix';
+import { twMerge } from 'tailwind-merge';
 
 interface NavbarItemProps {
   title: string;
@@ -58,26 +58,10 @@ function MobileMenu({
 }) {
   const isClient = useHydrationErrorFix();
   if (!isClient) return null;
-
+  const baseClass = "flex flex-col items-end w-[100vw] h-[100vh] overflow-hidden z-50 fixed top-0 left-0 py-5 bg-[rgba(0,0,0,0.8)] backdrop-blur-lg";
+  const conditionalClass = menuOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none";
   return (
-    <div
-      className={`flex flex-col
-          items-end
-          w-[100vw] h-[100vh]
-          overflow-hidden
-          z-[1000]
-          fixed top-0 left-0
-          py-5
-          bg-[rgba(0,0,0,0.8)] backdrop-blur-lg
-           ${isMobile() ? 'px-6' : 'px-10'}
-            ${
-              menuOpen
-                ? 'opacity-100 scale-100'
-                : 'opacity-0 scale-95 pointer-events-none'
-            }
-            transition-all duration-300
-           `}
-    >
+    <div className={twMerge(baseClass, conditionalClass)}>
       <div className="mt-10 w-full">
         {NavItems.map((navItem, indx) => {
           return (
@@ -101,19 +85,15 @@ function NavbarItemMobile({
   setMenuOpen,
 }: NavbarItemMobileProps) {
   const active = target === usePathname();
+  const isActiveClass = active ? 'text-amber-400' : 'text-white';
+  const baseClass = "text-2xl text-center py-4"
   return (
     <Link
-      className={`my-2 hover:!no-underline`}
+      className="my-2 hover:!no-underline"
       href={target}
       onClick={() => setMenuOpen(false)}
     >
-      <p
-        className={`text-2xl text-center py-4 ${
-          active ? 'text-amber-400' : 'text-white'
-        }`}
-      >
-        {title}
-      </p>
+      <p className={twMerge(isActiveClass, baseClass)}>{title}</p>
     </Link>
   );
 }
