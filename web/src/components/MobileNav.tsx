@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 import { usePathname } from 'next/navigation';
@@ -99,41 +98,10 @@ function NavbarItemMobile({
 }
 
 const AnimatedBurger = ({ menuOpen }: { menuOpen: boolean }) => {
+  const baseClass = 'absolute top-1/2 h-[0.175rem] w-7 rounded-sm transition-all duration-500 before:absolute before:content-[""] before:h-[0.175rem] before:w-7 before:-translate-x-3.5 before:-translate-y-[0.65rem] before:rounded-sm before:transition-all before:duration-500 before:bg-gray-400';
+  const afterClass = "after:absolute after:content-[''] after:h-[0.175rem] after:w-7 after:-translate-x-3.5 after:translate-y-[0.65rem] after:rounded-sm after:transition-all after:duration-50 after:bg-gray-400"
+  const classIsMenuOpen = menuOpen ? 'bg-transparent before:rotate-45 before:translate-y-[45%] after:translate-y-[65%] after:-rotate-45' : 'bg-gray-400';
   return (
-    <div
-      className={`
-            z-[9999]
-            absolute
-            top-1/2
-            ${menuOpen ? '-translate-y-1' : ''}
-            h-[0.175rem] w-7
-
-            rounded-sm
-            ${menuOpen ? 'bg-transparent' : 'bg-gray-400'}
-            transition-all
-            duration-500
-
-            before:absolute
-            before:content-[""]
-            before:h-[0.175rem] before:w-7
-            before:-translate-x-3.5
-            before:-translate-y-[0.65rem]
-            before:rounded-sm
-            before:transition-all
-            before:duration-500
-            before:bg-gray-400
-            ${menuOpen ? 'before:rotate-45 before:translate-y-[45%]' : ''}
-
-            after:absolute
-            after:content-[""]
-            after:h-[0.175rem] after:w-7
-            after:-translate-x-3.5
-            after:translate-y-[0.65rem]
-            after:rounded-sm
-            after:transition-all after:duration-500
-            after:bg-gray-400
-            ${menuOpen ? 'after:translate-y-[65%] after:-rotate-45' : ''}
-            `}
-    ></div>
+    <div className={twMerge(baseClass, afterClass, classIsMenuOpen)}></div>
   );
 };
