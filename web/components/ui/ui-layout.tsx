@@ -15,7 +15,7 @@ import {
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
 import { useHydrateStore } from '@/src/hooks/useHydrationStore';
-import { Navbar } from '@/src/components/Navbar';
+import Header from '@/src/components/Header';
 
 const StoreUpdater = () => {
   useHydrateStore();
@@ -27,7 +27,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
 
   return (
     <div>
-      <Navbar />
+      <Header />
     </div>
   );
 }
