@@ -46,11 +46,13 @@ export default function Header() {
 
   return (
     <nav className="sticky top-0 sm:border-b-0 border-b-2 sm:border-none border-gray-800 sm:static bg-base-200 sm:bg-transparent flex items-center justify-between w-full !h-[64px] !min-h-[64px]">
-      <div className="flex h-full">
-        <Logo />
-        <NavbarItemsDesktop />
+      <div className="container flex justify-between items-center">
+        <div className="flex h-full">
+          <Logo />
+          <NavbarItemsDesktop />
+        </div>
+        <MobileNav />
       </div>
-      <MobileNav />
     </nav>
   );
 }
