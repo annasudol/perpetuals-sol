@@ -4,19 +4,19 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
-import { usePerpetualsProgram } from './perpetuals-data-access';
-import { PerpetualsCreate, PerpetualsList } from './perpetuals-ui';
+import { useCounterProgram } from './counter-data-access';
+import { CounterCreate, CounterList } from './counter-ui';
 
-export default function PerpetualsFeature() {
+export default function CounterFeature() {
   const { publicKey } = useWallet();
-  const { programId } = usePerpetualsProgram();
+  const { programId } = useCounterProgram();
 
   return publicKey ? (
     <div>
       <AppHero
-        title="Perpetuals"
+        title="Counter"
         subtitle={
-          'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (increment, decrement, set, and close).'
+          'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (increment and decrement).'
         }
       >
         <p className="mb-6">
@@ -25,9 +25,9 @@ export default function PerpetualsFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <PerpetualsCreate />
+        <CounterCreate />
       </AppHero>
-      <PerpetualsList />
+      <CounterList />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">

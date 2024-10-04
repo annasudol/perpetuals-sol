@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  getPerpetualsProgram,
-  getPerpetualsProgramId,
-} from '@perpetuals/anchor';
+import { getCounterProgram, getCounterProgramId } from '@anchor-ping/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { Cluster, Keypair, PublicKey } from '@solana/web3.js';
@@ -14,20 +11,23 @@ import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '../solana/solana-provider';
 import { useTransactionToast } from '../ui/ui-layout';
 
-export function usePerpetualsProgram() {
+export function useCounterProgram() {
   const { connection } = useConnection();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
   const programId = useMemo(
-    () => getPerpetualsProgramId(cluster.network as Cluster),
+    () => getCounterProgramId(cluster.network as Cluster),
     [cluster]
   );
-  const program = getPerpetualsProgram(provider);
+  const program = getCounterProgram(provider);
+  const [PDA, bump] = PublicKey.findProgramAddressSync([], programId);
 
+  console.log(`PDA: ${PDA}`);
+  console.log(`Bump: ${bump}`);
   const accounts = useQuery({
-    queryKey: ['perpetuals', 'all', { cluster }],
-    queryFn: () => program.account.perpetuals.all(),
+    queryKey: ['counter', 'all', { cluster }],
+    queryFn: () => program.account.counter.all(),
   });
 
   const getProgramAccount = useQuery({
@@ -36,11 +36,11 @@ export function usePerpetualsProgram() {
   });
 
   const initialize = useMutation({
-    mutationKey: ['perpetuals', 'initialize', { cluster }],
+    mutationKey: ['counter', 'initialize', { cluster }],
     mutationFn: (keypair: Keypair) =>
       program.methods
         .initialize()
-        .accounts({ perpetuals: keypair.publicKey })
+        .accounts({ counter: keypair.publicKey })
         .signers([keypair])
         .rpc(),
     onSuccess: (signature) => {
@@ -59,34 +59,20 @@ export function usePerpetualsProgram() {
   };
 }
 
-export function usePerpetualsProgramAccount({
-  account,
-}: {
-  account: PublicKey;
-}) {
+export function useCounterProgramAccount({ account }: { account: PublicKey }) {
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
-  const { program, accounts } = usePerpetualsProgram();
+  const { program, accounts } = useCounterProgram();
 
   const accountQuery = useQuery({
-    queryKey: ['perpetuals', 'fetch', { cluster, account }],
-    queryFn: () => program.account.perpetuals.fetch(account),
-  });
-
-  const closeMutation = useMutation({
-    mutationKey: ['perpetuals', 'close', { cluster, account }],
-    mutationFn: () =>
-      program.methods.close().accounts({ perpetuals: account }).rpc(),
-    onSuccess: (tx) => {
-      transactionToast(tx);
-      return accounts.refetch();
-    },
+    queryKey: ['counter', 'fetch', { cluster, account }],
+    queryFn: () => program.account.counter.fetch(account),
   });
 
   const decrementMutation = useMutation({
-    mutationKey: ['perpetuals', 'decrement', { cluster, account }],
+    mutationKey: ['counter', 'decrement', { cluster, account }],
     mutationFn: () =>
-      program.methods.decrement().accounts({ perpetuals: account }).rpc(),
+      program.methods.decrement().accounts({ counter: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();
@@ -94,19 +80,9 @@ export function usePerpetualsProgramAccount({
   });
 
   const incrementMutation = useMutation({
-    mutationKey: ['perpetuals', 'increment', { cluster, account }],
+    mutationKey: ['counter', 'increment', { cluster, account }],
     mutationFn: () =>
-      program.methods.increment().accounts({ perpetuals: account }).rpc(),
-    onSuccess: (tx) => {
-      transactionToast(tx);
-      return accountQuery.refetch();
-    },
-  });
-
-  const setMutation = useMutation({
-    mutationKey: ['perpetuals', 'set', { cluster, account }],
-    mutationFn: (value: number) =>
-      program.methods.set(value).accounts({ perpetuals: account }).rpc(),
+      program.methods.increment().accounts({ counter: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();
@@ -115,9 +91,7 @@ export function usePerpetualsProgramAccount({
 
   return {
     accountQuery,
-    closeMutation,
     decrementMutation,
     incrementMutation,
-    setMutation,
   };
 }

@@ -5,12 +5,12 @@ import { useMemo } from 'react';
 import { ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import {
-  usePerpetualsProgram,
-  usePerpetualsProgramAccount,
-} from './perpetuals-data-access';
+  useCounterProgram,
+  useCounterProgramAccount,
+} from './counter-data-access';
 
-export function PerpetualsCreate() {
-  const { initialize } = usePerpetualsProgram();
+export function CounterCreate() {
+  const { initialize } = useCounterProgram();
 
   return (
     <button
@@ -23,9 +23,8 @@ export function PerpetualsCreate() {
   );
 }
 
-export function PerpetualsList() {
-  const { accounts, getProgramAccount } = usePerpetualsProgram();
-
+export function CounterList() {
+  const { accounts, getProgramAccount } = useCounterProgram();
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
   }
@@ -44,9 +43,10 @@ export function PerpetualsList() {
       {accounts.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
       ) : accounts.data?.length ? (
+        console.log("accounts", accounts.data),
         <div className="grid md:grid-cols-2 gap-4">
           {accounts.data?.map((account) => (
-            <PerpetualsCard
+            <CounterCard
               key={account.publicKey.toString()}
               account={account.publicKey}
             />
@@ -62,19 +62,19 @@ export function PerpetualsList() {
   );
 }
 
-function PerpetualsCard({ account }: { account: PublicKey }) {
+function CounterCard({ account }: { account: PublicKey }) {
   const {
     accountQuery,
     incrementMutation,
-    setMutation,
     decrementMutation,
-    closeMutation,
-  } = usePerpetualsProgramAccount({ account });
+  } = useCounterProgramAccount({ account });
 
-  const count = useMemo(
+  let count = useMemo(
     () => accountQuery.data?.count ?? 0,
     [accountQuery.data?.count]
   );
+
+  count = Number(count);
 
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
@@ -98,26 +98,6 @@ function PerpetualsCard({ account }: { account: PublicKey }) {
             </button>
             <button
               className="btn btn-xs lg:btn-md btn-outline"
-              onClick={() => {
-                const value = window.prompt(
-                  'Set value to:',
-                  count.toString() ?? '0'
-                );
-                if (
-                  !value ||
-                  parseInt(value) === count ||
-                  isNaN(parseInt(value))
-                ) {
-                  return;
-                }
-                return setMutation.mutateAsync(parseInt(value));
-              }}
-              disabled={setMutation.isPending}
-            >
-              Set
-            </button>
-            <button
-              className="btn btn-xs lg:btn-md btn-outline"
               onClick={() => decrementMutation.mutateAsync()}
               disabled={decrementMutation.isPending}
             >
@@ -131,22 +111,6 @@ function PerpetualsCard({ account }: { account: PublicKey }) {
                 label={ellipsify(account.toString())}
               />
             </p>
-            <button
-              className="btn btn-xs btn-secondary btn-outline"
-              onClick={() => {
-                if (
-                  !window.confirm(
-                    'Are you sure you want to close this account?'
-                  )
-                ) {
-                  return;
-                }
-                return closeMutation.mutateAsync();
-              }}
-              disabled={closeMutation.isPending}
-            >
-              Close
-            </button>
           </div>
         </div>
       </div>
